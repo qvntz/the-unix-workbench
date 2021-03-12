@@ -1,20 +1,29 @@
-#!/bin/bash
-filecount=$(ls -l | wc -l);
-printf "Guess how many files are in the directory: ";
-read userguess;
-end=0;
-while [[ $end -eq 0 ]]
+#!/usr/bin/env bash
+#File: guessinggame.sh
+
+#Calculate the number of files in the directory and store it in numfiles
+numfiles=$(ls -al | grep -v '^d' | wc -l)
+let numfiles=numfiles-1
+result='no guess yet'
+
+#Function for testing the answer
+verify_input () {
+    if [[ $1 == $numfiles ]]
+    then
+      result='Congratulations! Your guess is correct'
+    elif [[ $1 -gt $numfiles ]]
+    then
+      result='Your guess is too high'
+    else
+    result='Your guess is too low'
+    fi
+}
+
+#check result using the function
+while [ "$result" != "Congratulations! Your guess is correct" ]
 do
-	if [[ $userguess -eq $filecount ]]
-	then
-		printf "You guessed correctly!\n";
-		break;
-	elif [[ $userguess -gt $filecount ]]
-	then
-		printf "You guessed too high!\n";
-	else
-		printf "You guessed too low!\n"
-	fi
-	printf "Guess again: ";
-	read userguess;
+  read -p 'How many files are in this directory? ' guessedfiles
+  echo You guessed $guessedfiles
+  verify_input $guessedfiles
+  echo $result
 done
